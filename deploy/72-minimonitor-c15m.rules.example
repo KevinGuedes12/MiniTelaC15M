@@ -1,0 +1,2 @@
+# Porta USB interna do MiniMonitor C15M deste notebook.
+SUBSYSTEM=="tty", KERNEL=="ttyACM[0-9]*", ENV{ID_PATH}=="@USB_ID_PATH@", ENV{ID_VENDOR_ID}=="0324", ENV{ID_MODEL_ID}=="0324", RUN{program}+="/usr/bin/setfacl -m u:@USERNAME@:rw $devnode"

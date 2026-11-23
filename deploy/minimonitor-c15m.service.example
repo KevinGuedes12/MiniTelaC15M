@@ -1,0 +1,17 @@
+[Unit]
+Description=Dashboard MiniMonitor C15M
+RequiresMountsFor=@PROJECT_DIR@
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=@USERNAME@
+WorkingDirectory=@PROJECT_DIR@
+ExecStartPre=/usr/bin/python -m minimonitor --mostrar-dashboard
+ExecStart=/usr/bin/python -m minimonitor --atualizar-dashboard
+Restart=on-failure
+RestartSec=4s
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

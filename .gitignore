@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+*.acf
+*.AppImage
+*.deb
+*.exe
+.env
+/build/
