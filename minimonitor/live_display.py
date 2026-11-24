@@ -6,10 +6,10 @@ import termios
 from time import monotonic, sleep
 
 from .config import INTERVAL_MS
-from .live_theme import BARS, BAR_LEVELS, FIELDS
+from .registers import BARS, BAR_LEVELS, FIELDS
 from .metrics import Collector
 from .probe import response, serial_device
-from .render import percent, speed_label
+from .presentation_values import percent, speed_label
 
 
 def bar_level(value):

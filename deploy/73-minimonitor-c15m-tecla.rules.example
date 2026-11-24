@@ -1,0 +1,2 @@
+# Acesso de leitura do usuário ao teclado interno validado neste C15M.
+ACTION!="remove", SUBSYSTEM=="input", KERNEL=="event[0-9]*", ENV{ID_INPUT_KEYBOARD}=="1", ENV{ID_PATH}=="@KEYBOARD_ID_PATH@", RUN{program}+="/usr/bin/setfacl -m u:@USERNAME@:r $devnode"

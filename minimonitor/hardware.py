@@ -25,11 +25,23 @@ def matches(metadata, device_number):
     return stat.S_ISCHR(metadata.st_mode) and f"{major}:{minor}" == device_number
 
 
+def read_attribute(path):
+    try:
+        return path.read_text().strip() or "N/D"
+    except OSError:
+        return "N/D"
+
+
 def report():
+    dmi = Path("/sys/class/dmi/id")
+    print(f"Modelo DMI: {read_attribute(dmi / 'product_name')}")
+    print(f"Placa DMI: {read_attribute(dmi / 'board_name')}")
     ready = False
     ports = list(candidates())
     for usb, node, device_number in ports:
+        revision = read_attribute(Path("/sys/bus/usb/devices") / usb / "bcdDevice")
         print(f"USB {usb} 0324:0324 → {node} ({device_number})")
+        print(f"  Revisão USB: {revision}")
         try:
             metadata = node.stat()
         except OSError as exc:

@@ -3,6 +3,7 @@
 import cairo
 
 from . import config as c
+from .presentation_values import percent, speed_label
 
 
 def color(ctx, value):
@@ -27,10 +28,6 @@ def text(ctx, value, x, baseline, size, fill=c.TEXT, *, bold=False, right=False)
     ctx.show_text(value)
 
 
-def percent(value):
-    return "N/D" if value is None else f"{value:.0f}%"
-
-
 def metric(ctx, name, value, y, accent):
     text(ctx, name, 35 if name == "CPU" else 14, y, 14, c.MUTED, bold=True)
     text(ctx, percent(value), 226, y, 21, bold=True, right=True)
@@ -50,15 +47,6 @@ def cpu_icon(ctx):
         ctx.move_to(x, 59)
         ctx.line_to(x, 61)
     ctx.stroke()
-
-
-def speed_label(speed):
-    if speed is None:
-        return ""
-    for unit in ("B/s", "kB/s", "MB/s", "GB/s"):
-        if speed < 1000 or unit == "GB/s":
-            return f"{speed:.0f} {unit}"
-        speed /= 1000
 
 
 def render(metrics=None):

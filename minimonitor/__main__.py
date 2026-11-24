@@ -19,7 +19,33 @@ def main():
                         help="seleciona a primeira página de imagens da minitela")
     output.add_argument("--atualizar-dashboard", action="store_true",
                         help="envia métricas ao tema dinâmico já instalado")
+    output.add_argument("--preview-musica", action="store_true",
+                        help="abre a prévia com troca automática via MPRIS")
+    output.add_argument("--atualizar-com-musica", action="store_true",
+                        help="gerencia dashboard e música no tema AHMI correspondente")
+    parser.add_argument("--input-device", action="append", default=[], metavar="/dev/input/eventN",
+                        help="dispositivo autorizado a fornecer os eventos da minitela e das setas")
+    parser.add_argument("--minitela-key", type=int, metavar="CODIGO",
+                        help="código EV_KEY confirmado da tecla dedicada")
+    parser.add_argument("--visualizador", action="store_true",
+                        help="ativa as barras decorativas no tema correspondente")
+    parser.add_argument("--aguardar-login", action="store_true",
+                        help="conecta ao MPRIS quando a sessão do usuário iniciar")
     args = parser.parse_args()
+    if args.aguardar_login and not args.atualizar_com_musica:
+        parser.error("--aguardar-login exige --atualizar-com-musica")
+    if args.visualizador and not args.atualizar_com_musica:
+        parser.error("--visualizador exige --atualizar-com-musica")
+    if args.input_device or args.minitela_key is not None:
+        if (not args.atualizar_com_musica or not args.input_device or args.minitela_key is None
+                or args.minitela_key in (57, 105, 106) or not 0 < args.minitela_key <= 767):
+            parser.error("os atalhos exigem --atualizar-com-musica, --input-device e --minitela-key")
+    if args.atualizar_com_musica:
+        from .media_device import run
+
+        return run(args.input_device, args.minitela_key, visualizer=args.visualizador,
+                   wait_for_login=args.aguardar_login)
+
     if args.atualizar_dashboard:
         from .live_display import run
 
@@ -61,7 +87,12 @@ def main():
     from .display import Preview
     from gi.repository import Gdk
 
-    app = Preview(lambda: render(collector.sample()))
+    if args.preview_musica:
+        from .media_preview import MediaPreview
+
+        app = MediaPreview()
+    else:
+        app = Preview(lambda: render(collector.sample()))
     if Gdk.Display.get_default() is None:
         parser.exit(1, "Sessão gráfica inacessível. Abra o programa no terminal do desktop ou use --png.\n")
     return app.run([])

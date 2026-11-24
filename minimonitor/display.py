@@ -28,9 +28,12 @@ class Preview(Gtk.Application):
         canvas.set_content_height(HEIGHT)
         canvas.set_draw_func(self._draw)
         window.set_child(canvas)
+        self.start(canvas)
+        window.present()
+
+    def start(self, canvas):
         self._refresh(canvas)
         self._timer = GLib.timeout_add(INTERVAL_MS, self._refresh, canvas)
-        window.present()
 
     def _draw(self, _canvas, context, _width, _height):
         context.set_source_surface(self._frame, 0, 0)

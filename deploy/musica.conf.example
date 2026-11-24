@@ -1,0 +1,4 @@
+[Service]
+ExecStartPre=
+ExecStart=
+ExecStart=/usr/bin/python -m minimonitor --atualizar-com-musica --visualizador --aguardar-login --input-device @KEYBOARD_DEVICE@ --minitela-key @MINITELA_KEY@
